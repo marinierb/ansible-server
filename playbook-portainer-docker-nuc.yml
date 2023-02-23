@@ -1,0 +1,6 @@
+---
+- hosts: nuc
+  vars_files:
+  - guest_vars/docker-pihole2.yml
+  roles:
+  - { role: docker-portainer-ce, tags: docker }

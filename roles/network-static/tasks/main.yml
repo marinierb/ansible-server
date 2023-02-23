@@ -1,0 +1,21 @@
+- name: copy network config
+  ansible.builtin.template:
+    src:  interfaces
+    dest: /etc/network/
+  become: true
+
+- name: warning
+  debug:
+    msg:
+    - ===================================================================
+    - WARNING: Restarting the network service!
+    -          The VM will no longer be reachable as '{{ansible_host}}'.
+    -          The VM will now be reachable as ----> '{{vmHostname}}
+    - You need to kill the ansible play. It's just stuck at this point.
+    - ===================================================================
+  
+- name: restart network
+  ansible.builtin.systemd: 
+    name:  networking
+    state: restarted
+  become: true

@@ -1,0 +1,19 @@
+---
+- name: check if {{vmName}} exists
+  ansible.builtin.shell:
+    cmd: qm list | grep {{vmName}} >/dev/null 2>&1
+  register: out
+  ignore_errors: true
+
+- debug: msg="VM '{{vmName}}' already exist!"
+  when: out.rc == 0
+
+- name: clone vm {{vmName}} from {{vmClone}}
+  ansible.builtin.shell:
+    cmd: |
+      cloneId=`qm list | grep {{vmClone}} | awk '{ print $1 }'`
+      nextId=`pvesh get /cluster/nextid`
+      qm clone $cloneId $nextId --name {{vmName}}
+      [[ "{{vmMemory}}" ]] && qm set $nextID --memory "{{vmMemory}}"
+      qm start $nextId
+  when: out.rc != 0

@@ -1,0 +1,12 @@
+# The loopback network interface
+auto lo
+iface lo inet loopback
+ 
+# The primary network interface
+auto {{vmIPdev}}
+iface {{vmIPdev}}  inet static
+ address {{vmIPaddress}}
+ netmask {{siteNetmask}}
+ gateway {{siteGateway}}
+ dns-domain {{siteDomain}}
+ dns-nameservers {{siteDNS}}

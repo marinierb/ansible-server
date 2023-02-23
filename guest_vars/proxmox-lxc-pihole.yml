@@ -1,0 +1,19 @@
+---
+# NOTE: the role "r_pufky.pihole" needs debian
+
+# IMPORTANT: add new container DNS to pihole
+
+# for role proxmox-container
+ctHostname:     pihole
+ctUnprivileged: "true"
+ctPassword:     "{{secretInfraPassword}}"
+ctPubkey:       "{{brunoPubKey}}"
+ctOsTemplate:   "local:vztmpl/debian-11-standard_11.3-1_amd64.tar.zst"
+ctStorage:      "local-lvm"
+ctIPAddress:    "192.168.0.4"
+ctNetif:        '{"net0":"name=eth0,bridge=vmbr0,firewall=Yes,ip={{ctIPAddress}}/24,gw={{gateway}}"}'
+ctDiskGB:       "4"
+ctCPUs:         "1"
+ctMemoryMB:     "512"
+ctOnboot:       "true"
+ctFeatures:     "nesting=1"

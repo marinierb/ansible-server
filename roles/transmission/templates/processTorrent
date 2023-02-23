@@ -1,0 +1,69 @@
+#!/bin/bash
+# Transmission script to move files to post-processing
+
+#################################################################################
+# These are inherited from Transmission.                                        #
+# Do not declare these. Just use as needed.                                     #
+#                                                                               #
+# TR_APP_VERSION                                                                #
+# TR_TIME_LOCALTIME                                                             #
+# TR_TORRENT_DIR                                                                #
+# TR_TORRENT_HASH                                                               #
+# TR_TORRENT_ID                                                                 #
+# TR_TORRENT_NAME                                                               #
+#                                                                               #
+#################################################################################
+
+msg(){
+  echo "=== `basename $0`: $1"
+}
+
+[[ ! "$TR_TORRENT_NAME" ]] && exit
+msg "TR_TORRENT_NAME=$TR_TORRENT_NAME"
+src="`basename \"$TR_TORRENT_NAME\"`"
+msg "src=$src"
+
+cd
+
+# create a cleaned up name
+name=`echo "$src" | tr -s '[]() ' '.' | sed 's/\.$//'`
+msg "name=$name"
+
+# determine destination dir (TV or Movies)
+for tvd in `ls TV`
+do
+  if [[ "$name" =~ $tvd.* ]]
+  then
+    tvshow=1
+    break
+  fi
+done
+if [ "$tvshow" ]
+then
+  destDir=TV/$tvd/
+else
+  destDir=Movies/$name
+  mkdir $destDir
+  chmod 777 $destDir
+fi
+msg "destDir=$destDir"
+
+# copy over movies and subs
+IFS="
+"
+for f in `find Torrents/"$src" -type f -name '*.mkv' -o -name '*.mp4' -o -name '*.srt' -o -name '*.sub' -o -name '*.idx'`
+do
+  ext="${f##*.}"
+  if echo "$f" | grep '\-FORCED' >/dev/null 2>&1
+  then
+    suffix="-FORCED"
+  elif echo "$f" | grep '\-SDH' >/dev/null 2>&1
+  then
+    suffix="-SDH"
+  else
+    suffix=""
+  fi
+  file="$destDir/$name$suffix.$ext"
+  cp "$f" "$file"
+  chmod 666 $file
+done

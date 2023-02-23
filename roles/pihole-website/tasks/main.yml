@@ -1,0 +1,6 @@
+---
+- include_tasks: docker.yml
+  when: isDocker is defined
+
+- include_tasks: server.yml
+  when: isDocker is not defined

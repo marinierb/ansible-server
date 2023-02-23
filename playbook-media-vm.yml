@@ -1,0 +1,19 @@
+---
+- hosts: proxmox
+  vars_files:
+  - guest_vars/proxmox-vm-media.yml
+  roles:
+  - { role: proxmox-vm-clone,        tags: clone }
+  - { role: proxmox-vm-attach-disks, tags: disks }
+
+- hosts: debian
+  gather_facts: no
+  roles:
+  - { role: wait-for-ssh,      tags: wait-for-ssh }
+
+- hosts: debian
+  vars_files:
+  - guest_vars/proxmox-vm-media.yml
+  roles:
+  - { role: hostname,       tags: hostname }
+  - { role: network-static, tags: network }

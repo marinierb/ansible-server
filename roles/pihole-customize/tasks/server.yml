@@ -1,0 +1,16 @@
+---
+- name: copy setupVars and hosts
+  ansible.builtin.copy:
+    src:  ../files/pihole/custom.list
+    dest: /etc/pihole/
+    mode: 0644
+  become: true
+  notify: restart pihole service
+
+- name: copy whitelist
+  ansible.builtin.copy:
+    src:  ../files/pihole/whitelist.sh
+    dest: /etc/pihole
+    mode: 0644
+  become: true
+  notify: load whitelist

@@ -1,0 +1,17 @@
+---
+# Use to set up new VM created from debian-11.6.0 template.
+# The follow has already been done in the template:
+# - fresh as of 2023.02.17 (netinst)
+# - DHCP - hostname: debian - domain: home.arpa
+# - timezone
+# - user: bruno
+# - ssh with bruno keys
+# - sudo for bruno
+# - python
+
+ansible_host: debian
+ansible_user: bruno
+ansible_sudo_pass: "{{secretInfraPassword}}"
+
+python: 3
+ansible_python_interpreter: "/usr/bin/python{{python}}"

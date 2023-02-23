@@ -1,0 +1,10 @@
+---
+- name: restart pihole service
+  ansible.builtin.systemd:
+    name:  pihole-FTL
+    state: restarted
+  become: true
+
+- name: load whitelist
+  ansible.builtin.command:
+    cmd: sh /etc/pihole/whitelist.sh

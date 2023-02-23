@@ -1,0 +1,9 @@
+---
+- name: wait for SSH to come up on {{ansible_host}}
+  delegate_to: localhost
+  shell: echo | timeout 10 telnet {{ansible_host}} 22
+  register: lsresult
+  until: "lsresult is not failed"
+  retries: 10
+  delay: 10
+  changed_when: false

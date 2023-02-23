@@ -1,0 +1,34 @@
+---
+- name: create container {{ctHostname}}
+  community.general.proxmox:
+    node:         "{{proxmoxNode}}"
+    api_user:     "{{proxmoxUser}}"
+    api_password: "{{proxmoxPassword}}"
+    api_host:     "{{proxmoxHost}}"
+    hostname:     "{{ctHostname}}"
+    unprivileged: "{{ctUnprivileged}}"
+    password:     "{{ctPassword}}"
+    pubkey:       "{{ctPubkey}}"
+    ostemplate:   "{{ctOsTemplate}}"
+    storage:      "{{ctStorage}}"
+    netif:        "{{ctNetif}}"
+    disk:         "{{ctDiskGB}}"
+    cpus:         "{{ctCPUs}}"
+    memory:       "{{ctMemoryMB}}"
+    onboot:       "{{ctOnboot}}"
+    features:     "{{ctFeatures}}"
+  register: container
+
+- name: wait a bit
+  ansible.builtin.pause:
+    seconds: 10
+  when: container.changed
+
+- name: start container
+  community.general.proxmox:
+    node:         "{{proxmoxNode}}"
+    api_user:     "{{proxmoxUser}}"
+    api_password: "{{proxmoxPassword}}"
+    api_host:     "{{proxmoxHost}}"
+    hostname:     "{{ctHostname}}"
+    state:        started

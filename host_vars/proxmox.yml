@@ -1,0 +1,9 @@
+ansible_user: root
+
+ansible_python_interpreter: /usr/bin/python3
+
+# for all roles that connect to proxmox service
+proxmoxNode:     proxmox
+proxmoxUser:     root@pam
+proxmoxPassword: "{{secretInfraPassword}}"
+proxmoxHost:     proxmox.home.arpa

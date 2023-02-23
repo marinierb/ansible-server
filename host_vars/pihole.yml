@@ -1,0 +1,9 @@
+---
+ansible_host: pihole
+ansible_user: root
+
+python: python3
+ansible_python_interpreter: "/usr/bin/{{python}}"
+
+# for role r_pufky.pihole
+pihole_webpassword: "{{secretInfraPassword}}"

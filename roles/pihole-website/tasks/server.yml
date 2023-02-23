@@ -1,0 +1,6 @@
+---
+- name: copy web site
+  ansible.builtin.synchronize:
+    src:  "{{webSrc}}/"
+    dest: "{{webHome}}"
+  become: true

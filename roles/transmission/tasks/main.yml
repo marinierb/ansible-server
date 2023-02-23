@@ -1,0 +1,84 @@
+---
+- name: install
+  ansible.builtin.package:
+    name: transmission-daemon
+    state: present
+  become: true
+  register: package
+
+- name: stop service
+  ansible.builtin.systemd:
+    name:  transmission-daemon
+    state: stopped
+  become: true
+
+- name: prepare download directory
+  ansible.builtin.file:
+    path:  "{{trDownloadDir}}"
+    state: directory
+    owner: "{{user}}"
+    group: "{{user}}"
+    mode:  "0755"
+
+# - name: prepare directories
+#   ansible.builtin.file:
+#     path:  "{{item}}"
+#     state: directory
+#     owner: bruno
+#     group: bruno
+#     mode:  "0777"
+#   with_items: "{{mediaShares}}"
+
+- name: make it run as {{user}}
+  ansible.builtin.lineinfile: 
+    path: /usr/lib/systemd/system/transmission-daemon.service
+    regexp: '^User='
+    line: "User={{user}}"
+  become: true
+- name: systemd daemon-reload
+  ansible.builtin.systemd:
+    daemon_reload: true
+  become: true
+
+# - name: ensure service starts after expressvpn (part 1)
+#   ansible.builtin.lineinfile:
+#     path: /usr/lib/systemd/system/transmission.service
+#     regexp: "^ExecStartPre=/bin/sleep.*" 
+#     state: absent
+#   become: true
+# - name: ensure service starts after expressvpn (part 2)
+#   ansible.builtin.lineinfile:
+#     path: /usr/lib/systemd/system/transmission.service
+#     insertafter: '^\[Service\]'
+#     line:        'ExecStartPre=/bin/sleep {{waitForVPN}}'
+#   become: true
+
+- name: create config dir
+  ansible.builtin.file:
+    path: "{{userDir}}/.config/transmission-daemon"
+    state: directory
+    owner: "{{user}}"
+    group: "{{user}}"
+
+- name: copy config
+  ansible.builtin.template:
+    src:  settings.json
+    dest: "{{userDir}}/.config/transmission-daemon"
+    mode: 0644
+  become: true
+
+- name: copy post download script
+  ansible.builtin.template:
+    src:  processTorrent
+    dest: "{{userDir}}"
+    owner: "{{user}}"
+    group: "{{user}}"
+    mode: 0700
+  become: true
+
+- name: restart service
+  ansible.builtin.systemd:
+    name:  transmission-daemon
+    state: started
+    enabled: yes
+  become: true

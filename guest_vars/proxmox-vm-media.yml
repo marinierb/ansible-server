@@ -1,0 +1,18 @@
+---
+# for role proxmox-clone-vm
+vmName:         media
+vmClone:        debian-11.6.0
+
+# for role proxmox-vm-attach-disks
+vmDisks:
+- { dev: scsi1, diskId: nvme-Samsung_SSD_970_EVO_Plus_500GB_S58SNG0MA14020T }
+- { dev: scsi2, diskId: nvme-Samsung_SSD_970_EVO_Plus_1TB_S6S1NG0R626559M }
+
+# for hostname and network
+vmHostname:  media
+vmIPdev:     "ens18"
+vmIPaddress: "192.168.0.5"
+
+# vm settings different from clone
+vmMemory: 2048
+d

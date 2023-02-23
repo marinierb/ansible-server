@@ -1,0 +1,19 @@
+---
+- hosts: proxmox
+  vars_files:
+  - guest_vars/proxmox-lxc-pihole.yml
+  roles:
+  - { role: proxmox-container, tags: container }
+
+- hosts: pihole
+  gather_facts: no
+  roles:
+  - { role: wait-for-ssh,      tags: wait-for-ssh }
+
+- hosts: pihole
+  become: true
+  roles:
+  - { role: timezone,          tags: timezone }
+  - { role: r_pufky.pihole,                 tags: pihole }
+  - { role: pihole-customize,  tags: customize }
+  - { role: pihole-website,    tags: website }

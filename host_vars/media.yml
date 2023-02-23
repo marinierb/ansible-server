@@ -1,0 +1,51 @@
+---
+ansible_host: media
+ansible_user: bruno
+ansible_sudo_pass: "{{secretInfraPassword}}"
+
+python: 3
+ansible_python_interpreter: "/usr/bin/python{{python}}"
+
+# user who own/runs all media stuff
+user:     bruno
+userID:   1000
+userPass: "{{secretInfraPassword}}"
+userDir:  "/home/{{user}}"
+
+# for role mounts
+mounts:
+- { path: "{{userDir}}",           src: "LABEL=media",     fstype: "ext4", opts: "exec,noatime,nodev", state: "mounted" }
+- { path: "{{userDir}}/backup",    src: "LABEL=backup",    fstype: "ext4", opts: "noatime,nodev", state: "mounted" }
+- { path: "{{userDir}}/backupext", src: "LABEL=backupext", fstype: "ext4", opts: "user,noauto,nodev",  state: "present" }
+
+# for role mediashares
+mediaShares:
+- "{{userDir}}/Movies"
+- "{{userDir}}/TV"
+- "{{userDir}}/Videos"
+
+# for role transmission
+waitForVPN:            "20"
+trUser:                "{{user}}"
+#trRpcWhitelistEnabled: "true"
+#trRpcWhitelist:        "{{nuc}},{{phone}}" #"127.0.0.1,::1"
+trRpcPassword:         "{{secretInfraPassword}}"
+trDownloadDir:         "{{userDir}}/Torrents"
+trBlocklistEnabled:    "true"
+trBlocklistURL:        "https://github.com/Naunter/BT_BlockLists/raw/master/bt_blocklists.gz"
+trUtpEnabled:          "true"
+trPexEnabled:          "true"
+trDhtEnabled:          "true"
+trLpdEnabled:          "false"
+trScriptEnabled:         "true"
+trScriptFilename:        "{{userDir}}/processTorrent"
+trEncryption:          "0" # 0=Prefer unencrypted, 1=Prefer encrypted, 2=Require encrypted
+
+# for role fauust.mariadb
+mariadb_bind_address: "0.0.0.0"
+mariadb_users:
+- name: kodi
+  host: ""
+  password: "{{secretKodiPassword}}"
+  priv: "*.*:ALL"
+  state: present

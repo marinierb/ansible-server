@@ -1,0 +1,12 @@
+---
+- name: set hostname to {{vmHostname}}
+  ansible.builtin.hostname:
+    name: "{{vmHostname}}"
+  become: true
+
+- name: change /etc/hosts
+  ansible.builtin.lineinfile:
+    path:   /etc/hosts
+    regexp: '127.0.1.1(.*)debian.home.arpa(.*)debian'
+    line:   '127.0.1.1 {{vmHostname}}.home.arpa {{vmHostname}}'
+  become: true

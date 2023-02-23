@@ -1,0 +1,8 @@
+---
+- name: configure custom hosts and whitelist on {{dockerName}}
+  ansible.builtin.shell:
+    cmd:  |
+      docker cp files/pihole/custom.list {{dockerName}}:/etc/pihole/
+      docker exec -d {{dockerName}} pihole restartdns
+      docker cp files/pihole/whitelist.sh {{dockerName}}:/etc/pihole/
+      docker exec -d {{dockerName}} sh /etc/pihole/whitelist.sh

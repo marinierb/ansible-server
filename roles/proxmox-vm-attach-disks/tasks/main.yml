@@ -1,0 +1,18 @@
+---
+- name: check if {{vmName}} exists
+  ansible.builtin.shell:
+    cmd: qm list | grep {{vmName}} >/dev/null 2>&1
+  register: out
+  ignore_errors: yes
+
+- name: fail if VM doesn't exist
+  ansible.builtin.fail:
+    msg: VM {{vmName}} does not exist!"
+  when: out.rc != 0
+
+- name: attach disks
+  ansible.builtin.shell:
+    cmd: |
+      id=`qm list | grep {{vmName}} | awk '{ print $1 }'`
+      qm set $id --{{item.dev}} /dev/disk/by-id/{{item.diskId}}
+  with_items: "{{vmDisks}}"

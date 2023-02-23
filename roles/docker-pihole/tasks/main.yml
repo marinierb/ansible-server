@@ -1,0 +1,24 @@
+---
+- name: create docker container
+  community.docker.docker_container:
+    name:  "{{dockerName}}"
+    image: pihole/pihole
+    restart_policy: unless-stopped
+    network_mode: host
+    # ports:
+    # - "{{port_pihole_dns}}/tcp:53/tcp"
+    # - "{{port_pihole_dns}}/udp:53/udp"
+    # - "{{port_pihole_web}}:80"
+    env:
+      TZ: "{{timezone}}"
+      WEBPASSWORD: "{{secretInfraPassword}}"
+      FTLCONF_LOCAL_IPV4: "{{ansible_default_ipv4.address}}"
+      PIHOLE_DNS_: "8.8.8.8;8.8.4.4"
+
+- name: check {{dockerName}} container
+  ansible.builtin.uri:
+    url: "http://{{dockerName}}/admin"
+  register: result
+  until: result.status == 200
+  retries: 10
+  delay: 5

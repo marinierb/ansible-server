@@ -1,0 +1,8 @@
+---
+- hosts: nuc
+  vars_files:
+  - guest_vars/docker-pihole2.yml
+  roles:
+  - { role: docker-pihole,     tags: docker }
+  - { role: pihole-customize,  tags: customize }
+  - { role: pihole-website,    tags: website }

@@ -1,0 +1,6 @@
+---
+- name: configure custom hosts and whitelist on {{dockerName}}
+  ansible.builtin.shell:
+    cmd:  |
+      docker cp {{webSrc}}/. {{dockerName}}:/{{webHome}}
+  become: true

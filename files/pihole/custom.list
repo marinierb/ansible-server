@@ -1,0 +1,8 @@
+# after change, run ./an-pihole customize
+192.168.0.1 router.home.arpa
+192.168.0.2 nuc.home.arpa
+192.168.0.2 pihole2.home.arpa
+192.168.0.3 proxmox.home.arpa
+192.168.0.4 pihole.home.arpa
+192.168.0.4 web.home.arpa
+192.168.0.5 media.home.arpa

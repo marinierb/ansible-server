@@ -1,0 +1,12 @@
+---
+- name: fstab and mount
+  ansible.builtin.mount:
+    path:   "{{item.path}}"
+    src:    "{{item.src}}"
+    fstype: "{{item.fstype}}"
+    opts:   "{{item.opts}}"
+    state:  "{{item.state}}"
+  when: mounts is defined
+  with_items: "{{ mounts }}"
+  become: true
+

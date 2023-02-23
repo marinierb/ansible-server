@@ -1,0 +1,39 @@
+---
+- name: prepare
+  ansible.builtin.package:
+    name: python3-pexpect
+    state: present
+  become: true
+
+- name: set expressvpn package
+  ansible.builtin.set_fact:
+    deb: expressvpn_3.43.0.4-1_amd64.deb
+
+- name: download package 
+  ansible.builtin.get_url:
+    url:  "https://www.expressvpn.works/clients/linux/{{deb}}"
+    dest: .
+
+- name: install package
+  ansible.builtin.apt:
+    deb: "{{deb}}"
+  become: true
+
+- name: remove download
+  ansible.builtin.file:
+    path:  "{{deb}}"
+    state: absent
+
+- name: activate
+  ansible.builtin.expect:
+    command: expressvpn activate
+    responses:
+      'Enter activation code:': "{{secretVPNActivation}}"
+      '(Y/n)': "n"
+
+- name: set connection (smart / auto)
+  ansible.builtin.shell:
+    cmd: |
+      expressvpn connect smart
+      expressvpn autoconnect true
+

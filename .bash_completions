@@ -1,0 +1,56 @@
+#/usr/bin/env bash
+#################################################################################
+_media-server_completions()
+{
+  if [ "${#COMP_WORDS[@]}" != "2" ]; then
+    return
+  fi
+  COMPREPLY=($(compgen -W "$(grep -v '^ *#' playbook-media-server.yml | grep tags: | awk '{ print $6 }')" -- "${COMP_WORDS[1]}"))
+}
+complete -F _media-server_completions an-media-server
+#################################################################################
+_media-vm_completions()
+{
+  if [ "${#COMP_WORDS[@]}" != "2" ]; then
+    return
+  fi
+  COMPREPLY=($(compgen -W "$(grep -v '^ *#' playbook-media-vm.yml | grep tags: | awk '{ print $6 }')" -- "${COMP_WORDS[1]}"))
+}
+complete -F _media-vm_completions an-media-vm
+#################################################################################
+_pihole1-lxc_completions()
+{
+  if [ "${#COMP_WORDS[@]}" != "2" ]; then
+    return
+  fi
+  COMPREPLY=($(compgen -W "$(grep -v '^ *#' playbook-pihole1-lxc.yml | grep tags: | awk '{ print $6 }')" -- "${COMP_WORDS[1]}"))
+}
+complete -F _pihole1-lxc_completions an-pihole1-lxc
+#################################################################################
+_pihole2-docker-nuc_completions()
+{
+  if [ "${#COMP_WORDS[@]}" != "2" ]; then
+    return
+  fi
+  COMPREPLY=($(compgen -W "$(grep -v '^ *#' playbook-pihole2-docker-nuc.yml | grep tags: | awk '{ print $6 }')" -- "${COMP_WORDS[1]}"))
+}
+complete -F _pihole2-docker-nuc_completions an-pihole2-docker-nuc
+#################################################################################
+_portainer-docker-nuc_completions()
+{
+  if [ "${#COMP_WORDS[@]}" != "2" ]; then
+    return
+  fi
+  COMPREPLY=($(compgen -W "$(grep -v '^ *#' playbook-portainer-docker-nuc.yml | grep tags: | awk '{ print $6 }')" -- "${COMP_WORDS[1]}"))
+}
+complete -F _portainer-docker-nuc_completions an-portainer-docker-nuc
+#################################################################################
+_proxmox_completions()
+{
+  if [ "${#COMP_WORDS[@]}" != "2" ]; then
+    return
+  fi
+  COMPREPLY=($(compgen -W "$(grep -v '^ *#' playbook-proxmox.yml | grep tags: | awk '{ print $6 }')" -- "${COMP_WORDS[1]}"))
+}
+complete -F _proxmox_completions an-proxmox
+###############################################################################
