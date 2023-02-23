@@ -1,5 +1,7 @@
 # Create some servers using ansible
 
+![GitHub last commit](https://img.shields.io/github/last-commit/marinierb/ansible-server)
+
 ## The playbooks
 
 ### playbook-proxmox.yml
