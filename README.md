@@ -10,6 +10,9 @@
 
 ### playbook-media-vm.yml
 * create the media server VM on proxmox
+* attach disks
+* set hostname
+* configure static ip
 
 ### playbook-media-server.yml
 * install nfs
