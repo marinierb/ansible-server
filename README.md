@@ -30,9 +30,7 @@
 
 ## Running the playbooks
 
-```
-Secrets are stored 
-```
+**Note**: Secrets are stored in **group_vars/all/vault.yml** and the password in **.vaultpass**, both of which are in the **.gitignore**.
 
 1. Install some required external roles (for pihole and mariadb)
 
