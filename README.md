@@ -2,16 +2,16 @@
 
 ## The playbooks
 
-### - playbook-proxmox.yml
+### playbook-proxmox.yml
 * remove proxmox subscription nag
 * install some packages needed by ansible
 * add proxmox non-prod software source
 * comment out proxmox entreprise software source
 
-### - playbook-media-vm.yml
+### playbook-media-vm.yml
 * create the media server VM on proxmox
 
-### - playbook-media-server.yml
+### playbook-media-server.yml
 * install nfs
 * create filesystem mounts
 * create nfs shares
@@ -19,13 +19,13 @@
 * install expressvpn
 * install mariadb (for kodi database)
 
-### - playbook-pihole1-lxc.yml
+### playbook-pihole1-lxc.yml
 * create a pihole container on proxmox
 
-### - playbook-pihole2-docker-nuc.yml
+### playbook-pihole2-docker-nuc.yml
 * create a pihole docker container on desktop (as a backup)
 
-### - playbook-portainer-docker-nuc.yml
+### playbook-portainer-docker-nuc.yml
 * create a portainer docker container on desktop
 
 ## Running the playbooks
