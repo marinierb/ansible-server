@@ -2,7 +2,7 @@
 - hosts: media
   roles:
   - { role: test,           tags: test }
-  - { role: nfs,            tags: nfs }
+  - { role: nfs-server,     tags: nfs }
   - { role: mounts,         tags: mounts }
   - { role: mediashares,    tags: mediashares }
   - { role: transmission,   tags: transmission }

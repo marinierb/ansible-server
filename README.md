@@ -17,7 +17,7 @@
 * configure static ip
 
 ### playbook-media-server.yml
-* install nfs
+* install nfs server
 * create filesystem mounts
 * create nfs shares
 * install transmission
