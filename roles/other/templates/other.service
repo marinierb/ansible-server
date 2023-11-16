@@ -1,0 +1,12 @@
+# Custom built service to mount/umount .other encfs directory
+
+[Unit]
+Description=other encfs directory
+
+[Service]
+RemainAfterExit=yes
+ExecStart=/usr/bin/other-start
+ExecStop=/usr/bin/other-stop
+
+[Install]
+WantedBy=multi-user.target

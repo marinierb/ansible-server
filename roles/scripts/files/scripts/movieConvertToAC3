@@ -1,0 +1,15 @@
+#!/bin/bash
+for f in $1
+do
+  # make sure it's aac
+  if [ "`ffprobe \"$f\" -show_entries \"stream=codec_name\" -select_streams a:0 -v error -of compact=p=0:nk=1`" != "aac" ]
+  then
+    echo "NOT AAC --> `basename $f`"
+  fi
+  name="${f%.*}" ; ext="${f##*.}"
+  newname="$name.ac3-6.$ext"
+# "-ac 6" for 5.1
+  ffmpeg -i "$f" -c copy -c:a ac3 -ac 6 "$newname" 2>&1
+  mv "$f" $f.bbb
+  echo "Done!"
+done

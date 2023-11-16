@@ -1,0 +1,8 @@
+---
+- name: install hook
+  ansible.builtin.copy:
+    src:  custom-expressvpn-post.hook
+    dest: "{{hookDir}}"
+  when: hookDir is defined
+  become: true
+  

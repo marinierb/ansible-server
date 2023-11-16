@@ -1,0 +1,19 @@
+---
+- name: install firefox launcher
+  ansible.builtin.copy:
+    src:  private.desktop
+    dest: "{{userDir}}/.local/share/applications"
+
+- name: install yt-dlp
+  aur:
+    name:  yt-dlp
+    state: present
+
+- name: install gv
+  ansible.builtin.template:
+    src:   gv
+    dest:  "{{localBin}}/"
+    owner: bruno
+    group: bruno
+    mode: 0500
+  become: true

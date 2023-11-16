@@ -1,0 +1,61 @@
+---
+- name: install encfs
+  ansible.builtin.package:
+    name:  encfs
+    state: present
+  become: true
+
+- name: install service start/stop scripts
+  ansible.builtin.template:
+    src:  "{{item}}"
+    dest: /usr/bin
+    mode: 0700
+  with_items:
+  - other-start
+  - other-stop
+  become: true
+  notify: daemon reload
+
+- name: install service
+  ansible.builtin.template:
+    src:  other.service
+    dest: /etc/systemd/system
+    mode: 0644
+  become: true
+  notify: daemon reload
+
+- name: create service drop-in dir
+  ansible.builtin.file:
+    path:  /etc/systemd/system/other.service.d
+    state: directory
+    mode:  "0600"
+  become: true
+
+- name: create credentials
+  ansible.builtin.shell: |
+    echo [Service] \
+      > /etc/systemd/system/other.service.d/50-password.conf
+    echo {{secretEncfsPassword}} \
+    | systemd-creds encrypt --name=otherPassword -p - - \
+      >>/etc/systemd/system/other.service.d/50-password.conf
+    chmod 600 /etc/systemd/system/other.service.d/50-password.conf
+  become: true
+  notify: daemon reload
+
+- name: make sure it's disabled (won't start at boot)
+  ansible.builtin.systemd:
+    name:    other
+    enabled: false
+  become: true
+
+- name: create sudoers files for {{user}}
+  ansible.builtin.lineinfile:
+    path: "/etc/sudoers.d/{{user}}"
+    line: "{{item}}"
+    state: present
+    mode:  0600
+    create: yes
+  with_items:
+  - "{{user}} ALL=(ALL) NOPASSWD: /usr/bin/systemctl start other" # 2>/dev/null"
+  - "{{user}} ALL=(ALL) NOPASSWD: /usr/bin/systemctl stop other" # 2>/dev/null"
+  become: true

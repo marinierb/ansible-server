@@ -1,0 +1,6 @@
+---
+- name: install transmission
+  include_tasks: install.yml
+
+- name: configure service
+  include_tasks: service.yml

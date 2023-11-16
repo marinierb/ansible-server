@@ -1,0 +1,4 @@
+#!/usr/bin/sh
+# Called by other.service
+# umounts the .other encfs directory
+/usr/bin/encfs -u {{mediaOtherShare}}

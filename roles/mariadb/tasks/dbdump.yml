@@ -1,0 +1,52 @@
+---
+- name: create service drop-in dir
+  ansible.builtin.file:
+    path:  /etc/systemd/system/dbdump.service.d
+    state: directory
+    mode:  "0600"
+  become: true
+  
+- name: create credentials
+  ansible.builtin.shell: |
+    echo [Service] \
+      > /etc/systemd/system/dbdump.service.d/50-password.conf
+    echo {{secretKodiPassword}} \
+    | systemd-creds encrypt --name=kodiPassword -p - - \
+      >>/etc/systemd/system/dbdump.service.d/50-password.conf
+    chmod 600 /etc/systemd/system/dbdump.service.d/50-password.conf
+  become: true
+
+- name: install script
+  ansible.builtin.template:
+    src:  "{{item}}"
+    dest: /usr/bin
+    mode: 0700
+  with_items:
+  - dbdump
+  become: true
+
+- name: install timer and service
+  ansible.builtin.template:
+    src:  "{{item}}"
+    dest: /etc/systemd/system
+    mode: 0644
+  with_items:
+  - dbdump.timer
+  - dbdump.service
+  become: true
+
+- name: enable timer
+  ansible.builtin.systemd:
+    name:    dbdump.timer
+    enabled: true
+    state:   started
+    daemon_reload: true
+  become: true
+
+- name: enable service
+  ansible.builtin.systemd:
+    name:    dbdump.service
+    enabled: true
+    state:   stopped
+    daemon_reload: true
+  become: true

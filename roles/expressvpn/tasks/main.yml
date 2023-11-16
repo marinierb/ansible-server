@@ -1,0 +1,9 @@
+---
+- name: install expressvpn
+  include_tasks: install.yml
+
+- name: configure expressvpn
+  include_tasks: configure.yml
+
+- name: install package update hook
+  include_tasks: hook.yml

@@ -1,0 +1,9 @@
+---
+- name: set up share
+  include_tasks: share.yml
+
+- name: create service
+  include_tasks: service.yml
+
+- name: install tools
+  include_tasks: tooling.yml

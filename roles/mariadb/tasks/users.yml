@@ -1,0 +1,11 @@
+---
+- name: create db user
+  community.mysql.mysql_user:
+    name:     "{{item.name}}"
+    host:     "{{item.host}}"
+    password: "{{item.password}}"
+    priv:     "{{item.priv}}"
+    state:    present
+  with_items: "{{dbUsers}}"
+  become: true
+  when: install.changed

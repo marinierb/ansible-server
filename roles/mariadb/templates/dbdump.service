@@ -1,0 +1,7 @@
+# Custom built timer to backup database
+[Unit]
+Description=Daily database backup
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/dbdump

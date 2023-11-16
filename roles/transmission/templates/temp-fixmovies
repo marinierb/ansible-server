@@ -1,0 +1,34 @@
+#!/bin/bash
+
+if [ ! -d "$1" ]
+then
+  echo "Specify dir"
+  exit 1
+fi
+
+OFS="
+"
+cd $1
+clear
+echo -e "\n\n`pwd`"
+f=`ls *.mkv *.mp4`
+dst="$f.new.mkv"
+
+echo "file: $f"
+echo -e "\nBefore:"
+ffprobe "$f" 2>&1 | grep Stream
+
+lang=`ffprobe -hide_banner -loglevel error "$f" -show_entries stream=index:stream_tags=language -select_streams a:0 -of compact=p=0:nk=1 | cut -d'|' -f2`
+echo lang=$lang
+case "$lang" in
+  "eng"|"fre")
+     ffmpeg -hide_banner -loglevel error -i "$f" -c copy -map 0:v:0 -map 0:a:m:language:$lang? -map 0:s:m:language:$lang? "$dst"
+     ;;
+  *) ffmpeg -hide_banner -loglevel error -i "$f" -c copy -map 0:v:0 -map 0:a:m:language:eng? -map 0:a:m:language:fre? -map 0:s:m:language:eng? -map 0:s:m:language:fre? "$dst"
+     ;;
+esac
+mv -f "$dst" "$f"
+
+echo -e "\nAfter:"
+ffprobe "$f" 2>&1 | grep Stream
+echo -e "\n\n"

@@ -1,0 +1,3 @@
+#!/usr/bin/sh
+pass=`cat $CREDENTIALS_DIRECTORY/kodiPassword`
+/usr/bin/mysqldump -u {{dbUsers[1].name}} -p"$pass" -B {{kodiDatabase}} >{{kodiDumpFile}}

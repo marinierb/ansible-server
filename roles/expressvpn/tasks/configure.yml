@@ -1,0 +1,34 @@
+---
+- name: configure service
+  ansible.builtin.systemd:
+    name:    expressvpn
+    state:   restarted
+    enabled: yes
+  become: true
+
+- name: install pexpect
+  ansible.builtin.package:
+    name: python-pexpect
+    state: present
+  become: true
+
+- name: logout
+  ansible.builtin.expect:
+    command: expressvpn logout
+    responses:
+      '(y/N)': "y"
+  ignore_errors: true
+
+- name: activate
+  ansible.builtin.expect:
+    command: expressvpn activate
+    responses:
+      'Enter activation code:': "{{secretVPNActivation}}"
+      '(Y/n)': "n"
+
+- name: set connection (smart / auto)
+  ansible.builtin.shell:
+    cmd: |
+      expressvpn connect smart
+      expressvpn autoconnect true
+

@@ -1,0 +1,10 @@
+# Custom built timer to backup database
+[Unit]
+Description=Daily database backup
+
+[Timer]
+OnCalendar=daily
+Persistent=true
+
+[Install]
+WantedBy=timers.target

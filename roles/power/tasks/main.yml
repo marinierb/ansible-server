@@ -1,0 +1,16 @@
+---
+# https://www.tecmint.com/disable-suspend-and-hibernation-in-linux/
+
+# Verify:
+#   systemctl status sleep.target suspend.target hibernate.target hybrid-sleep.target | grep Loaded
+
+- name: disable suspend and hibernation
+  ansible.builtin.systemd:
+    name: "{{item}}"
+    masked: yes
+  with_items:
+  - sleep.target
+  - suspend.target
+  - hibernate.target
+  - hybrid-sleep.target
+  become: true

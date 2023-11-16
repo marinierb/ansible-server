@@ -1,0 +1,12 @@
+[Desktop Entry]
+Name=Private
+GenericName=Private
+Icon=firefox
+Exec=/usr/bin/firefox --private-window %u
+Terminal=false
+X-MultipleArgs=false
+Type=Application
+MimeType=text/html;text/xml;application/xhtml+xml;x-scheme-handler/http;x-scheme-handler/https;application/x-xpinstall;application/pdf;application/json;
+StartupNotify=true
+StartupWMClass=firefox
+Categories=Private;Network;WebBrowser;

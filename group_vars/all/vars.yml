@@ -1,0 +1,24 @@
+---
+timezone: "America/Toronto"
+tzShort: EST
+
+siteDomain:     "home.arpa"
+siteGateway:    "192.168.0.1"
+siteNetmask:    "255.255.255.0"
+siteDNS:        "192.168.0.4,192.168.0.2"
+
+nuc:      "192.168.0.2"
+phone:    "192.168.0.100"
+eboxHaut: "192.168.0.101"
+eboxBas:  "192.168.0.102"
+eboxPi:   "192.168.0.207"
+laptop:   "192.168.0.104"
+
+mediaClients:
+- "{{phone}}"
+- "{{eboxHaut}}"
+- "{{eboxBas}}"
+- "{{eboxPi}}"
+- "{{laptop}}"
+
+brunoPubKey: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQC4fyrgZEn7WZlnVshqFJFuMKIwLr9cJMXP5yZmuZbK78VEo3zY5EmIhOPmNfBM8OAHo0UQVmF+uB379k/tJZFY8SJqej9CiVmIzwKrsDWjROqLE2VMIyfKh3rpI3m2iGRdmE7JFVaZCcl2ThWZI216PvM9lPUWiiEeS8yKNvSBRIWG2C+TmkMqlca2RED7IxCcXydxkXWCN2hFPGE2vOuS1yaYfQ33SF/FEujpGeBUqg0FfSV1cW0uHRXrhxSIfJ2zEV2zG0uWUla0/nirONoCayukWTn0Yl9RePHB53uTtFbqLI/bmXjlWKU+ywkB4KtU6pXyPIcckda3GRgt4AiFaHcF6xYQDtJUxzYPKap2oBtgoqH0ZNtICfFk//W57i0ovKAhxI8CwotAQQqzkZwcpr4XsQ44Ki1gdVRay+RYGvBlN9UPXKUV15gVKEPB00QDZ1rkNlAyMKGaVtlZNtlKVAv1gCEg+rOdr6T6nR7veG6UOKSeOo+GY4yGb49gDMc= bruno@nuc.home.arpa"

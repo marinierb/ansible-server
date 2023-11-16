@@ -1,0 +1,11 @@
+#/usr/bin/env bash
+#################################################################################
+_server_completions()
+{
+  if [ "${#COMP_WORDS[@]}" != "2" ]; then
+    return
+  fi
+  COMPREPLY=($(compgen -W "$(grep -v '^ *#' playbook-server.yml | grep tags: | awk '{ print $6 }')" -- "${COMP_WORDS[1]}"))
+}
+complete -F _server_completions an-server
+###############################################################################

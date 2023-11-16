@@ -1,0 +1,63 @@
+---
+ansible_host: server
+ansible_user: bruno
+ansible_sudo_pass: "{{secretInfraPassword}}"
+
+python: 3
+ansible_python_interpreter: "/usr/bin/python{{python}}"
+
+# for hooks
+hookDir: /usr/share/libalpm/hooks
+
+# for role swap
+swapEnable:   true
+swapfileSize: 4096
+swapfilePath: /swapfile
+swappiness:   10
+
+# user who own/runs all media stuff
+user:     bruno
+userID:   1000
+userPass: "{{secretInfraPassword}}"
+userDir:  "/home/{{user}}"
+
+# for role mounts
+mounts:
+- { path: "{{userDir}}",        src: "LABEL=media1000", fstype: "ext4", opts: "exec,noatime,nodev", state: "mounted" }
+- { path: "{{userDir}}/other",  src: "LABEL=media500",  fstype: "ext4", opts: "noatime,nodev",      state: "mounted" }
+- { path: "{{userDir}}/backup", src: "LABEL=backup",    fstype: "ext4", opts: "user,noauto,nodev",  state: "present" }
+
+# for role mediashares
+mediaShares:
+- "{{userDir}}/Movies"
+- "{{userDir}}/TV"
+- "{{userDir}}/Videos"
+- "{{userDir}}/other/Music"
+- "{{userDir}}/other/Pictures"
+- "{{userDir}}/other/LooneyTunes"
+
+# for role othershare
+mediaOtherDir:   "{{userDir}}/other/.other"
+mediaOtherShare: "{{userDir}}/other/.otherMounted"
+localBin:        "{{userDir}}/.local/bin"
+
+# for role transmission
+trWaitForVPN:          "10"
+trUser:                "{{user}}"
+trConfigDir:           "{{userDir}}/.config/transmission-daemon"
+trDownloadDir:         "{{userDir}}/Torrents"
+trScriptDir:           "{{userDir}}/Scripts"
+trScriptFilename:      "{{trScriptDir}}/processTorrent"
+
+# for role mariadb
+dbUsers:
+  - name: kodi
+    host: ""
+    password: "{{secretKodiPassword}}"
+    priv: "*.*:ALL"
+  - name: kodi
+    host: localhost # required for running dbdump from the server
+    password: "{{secretKodiPassword}}"
+    priv: "*.*:ALL"
+kodiDatabase: MyVideos121
+kodiDumpFile: "{{userDir}}/other/kodiDB-{{kodiDatabase}}.sql"

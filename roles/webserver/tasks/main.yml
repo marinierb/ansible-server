@@ -1,0 +1,31 @@
+---
+- name: install apache
+  ansible.builtin.package:
+    name: 
+    - apache
+    state: present
+  become: true
+
+- name: configure service
+  ansible.builtin.systemd:
+    name:    httpd
+    state:   started
+    enabled: yes
+  become: true
+
+- name: install file browsing config
+  ansible.builtin.template:
+    src:  "httpd-files.conf"
+    dest: /etc/httpd/conf/extra
+  become: true
+  notify: reload httpd
+
+- name: enable file browsing
+  ansible.builtin.blockinfile:
+    path: /etc/httpd/conf/httpd.conf
+    block: |
+      # Allow {{userDir}} browsing
+      Include conf/extra/httpd-files.conf
+  become: true
+  notify: reload httpd
+

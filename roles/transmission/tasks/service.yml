@@ -1,0 +1,30 @@
+---
+- name: make it run as {{user}}
+  ansible.builtin.lineinfile: 
+    path: /usr/lib/systemd/system/transmission.service
+    regexp: '^User='
+    line: "User={{user}}"
+  become: true
+  notify: service reload
+
+- name: create service drop-in dir
+  ansible.builtin.file:
+    path:  /etc/systemd/system/transmission.service.d
+    state: directory
+    mode:  "0600"
+  become: true
+  notify: service reload
+
+- name: copy service drop-in file
+  ansible.builtin.template:
+    src: 50-startafter.conf
+    dest: /etc/systemd/system/transmission.service.d
+  become: true
+  notify: service reload
+
+- name: start service
+  ansible.builtin.systemd:
+    name:  transmission
+    state: started
+    enabled: yes
+  become: true

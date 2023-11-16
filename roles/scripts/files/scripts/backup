@@ -1,0 +1,142 @@
+#!/bin/bash
+######################################################################
+errexit(){
+  echo "-----------------------------------------------"
+  echo "ERROR: $1!"
+  echo "-----------------------------------------------"
+  exit 1
+}
+######################################################################
+[[ `id -u` != 0 ]]         && errexit "Must be root!"
+[[ `hostname` != server ]] && errexit "server only!"
+######################################################################
+# SETTINGS
+######################################################################
+backupSrc=/home/bruno
+backupDst=/mnt/backup
+includeList=/home/bruno/Scripts/backup-include.lst
+logfile=/home/bruno/backup.log
+######################################################################
+log(){
+  echo -e "$1" | tee -a $logfile
+}
+######################################################################
+# PROCESS ARGS
+######################################################################
+usage(){
+  echo "
+usage: `basename $0` [-d] [-option] password
+  options:
+  -d   rsync dryrun
+  -m   mount     only
+  -v   verify    only
+  -b   backup    only
+  -s   showspace only
+  -u   umount    only
+  -t   test mode
+  -h   help
+"
+}
+mount=1 ; verify=1 ; backup=1 ; showspace=1 ; unmount=1
+while [ "$1" ]
+do
+  case "$1" in
+    "-d")  dryrun="--dry-run";;
+    "-m")  mount=1 ; verify=  ; backup=  ; showspace=  ; unmount= ;;
+    "-v")  mount=  ; verify=1 ; backup=  ; showspace=  ; unmount= ;;
+    "-b")  mount=  ; verify=  ; backup=1 ; showspace=  ; unmount= ;;
+    "-s")  mount=  ; verify=  ; backup=  ; showspace=1 ; unmount= ;;
+    "-u")  mount=  ; verify=  ; backup=  ; showspace=  ; unmount=1;;
+    "-h")  usage   ; exit 1;;
+      *)   password=$1;;
+  esac
+  shift
+done
+[[ ! "$password" ]] && errexit "Missing password!"
+######################################################################
+# FUNCTIONS
+######################################################################
+mountluks(){
+  echo "=====> Mount <====="
+  #
+  echo "-- Identify backup partition..."
+  device=`lsblk --nodeps -o name,serial | grep WD-WX | cut -d' ' -f1`
+  [[ ! "$device" ]] && errexit "Device not found!"
+  partition=/dev/${device}
+  echo "   Partition is $partition"
+  #
+  echo "-- Unlock volume..."
+  echo "$password" | cryptsetup luksOpen $partition backup
+  [[ ! -L /dev/mapper/backup ]] && errexit "Failed to unlock volume"
+  #
+  echo "-- Mount volume..."
+  mkdir -p $backupDst
+  mount /dev/mapper/backup $backupDst || errexit "Failed to mount volume"
+}
+######################################################################
+verify(){
+  log "=====> Verify <====="
+  IFS="
+"
+  log " -----------------------------------------------------"
+  log "| Directory       |  On disk  | On backup |    Diff   |"
+  log "| ----------------|-----------|-----------|-----------|"
+  format="| %-15s | %9d | %9d | %9.0d |\n"
+  for d in `grep -v -e '^ *#' $includeList | grep '\*\*\*' | cut -d' ' -f2- | sed 's/\*\*\*.*$//'`
+  do
+    disk=`find $d -type f | wc -l`
+    backup=`find $backupDst$d -type f | wc -l`
+    ((diff=$disk-$backup))
+    log $(printf $format `basename "$d"` $disk $backup $diff)
+  done
+  log " -----------------------------------------------------"
+  if [ ! "$TERM" = unknown ]
+  then
+    read -p "Looks good? [y/N] " a
+    [[ "$a" != @(Y|y) ]] && errexit "Aborted at verify!"
+  fi
+}
+######################################################################
+backup(){
+  log "==============================================="
+  log "BACKUP STARTED - `date +\"%Y.%m.%d-%T\"`"
+  log "==============================================="
+  rsync $dryrun -aRv --delete --delete-excluded \
+    --include-from=$includeList \
+    --exclude='*' \
+    $backupSrc    \
+    $backupDst/   \
+    | tee -a $logfile
+  [[ $? != 0 ]] && errexit "rsync failed"
+  log "==============================================="
+  log "BACKUP FINISHED - `date +\"%Y.%m.%d-%T\"`"
+  log "==============================================="
+}
+######################################################################
+showspace(){
+  log "=====> Check space <====="
+  df -h $backupDst | tee -a $logfile
+}
+######################################################################
+unmount(){
+  echo "=====> Unmount <====="
+  #
+  echo "Umount volume..."
+  umount $backupDst || errexit "Failed to umount volume"
+  #
+  echo "Lock volume..."
+  cryptsetup luksClose backup ||  errexit "Failed to lock volume"
+}
+######################################################################
+# MAINLINE
+######################################################################
+echo
+[[ "$mount" ]]     && mountluks
+[[ "$backup" ]]    && >$logfile && chown bruno:bruno $logfile
+[[ "$verify" ]]    && verify
+[[ "$backup" ]]    && backup
+[[ "$showspace" ]] && showspace
+[[ "$unmount" ]]   && unmount
+log "\n=====> All done! <====="
+echo
+######################################################################

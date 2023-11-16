@@ -1,0 +1,21 @@
+---
+- name: import gpg key
+  ansible.builtin.shell: |
+    wget https://www.expressvpn.com/{{expressvpnKey}}
+    gpg --import {{expressvpnKey}}
+    rm -f {{expressvpnKey}}
+
+- name: download package 
+  ansible.builtin.get_url:
+    url:  "https://www.expressvpn.works/clients/linux/{{expressvpnPkg}}"
+    dest: .
+
+- name: install package
+  ansible.builtin.command:
+    "pacman -U {{expressvpnPkg}} --noconfirm"
+  become: true
+
+- name: remove downloaded package
+  ansible.builtin.file:
+    path:  "{{expressvpnPkg}}"
+    state: absent

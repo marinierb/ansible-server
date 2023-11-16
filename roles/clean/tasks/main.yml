@@ -1,0 +1,11 @@
+---
+- name: remove packages
+  ansible.builtin.package:
+    name: "{{item}}"
+    state: absent
+  with_items:
+  - manjaro-hello
+  - gnome-weather
+  - gnome-tour
+  - gnome-calendar
+  become: true

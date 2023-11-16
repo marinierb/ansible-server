@@ -1,0 +1,93 @@
+#!/bin/bash
+# Transmission script to move files to post-processing
+
+#################################################################################
+# These are inherited from Transmission.                                        #
+# Do not declare these. Just use as needed.                                     #
+#                                                                               #
+# TR_APP_VERSION                                                                #
+# TR_TIME_LOCALTIME                                                             #
+# TR_TORRENT_DIR                                                                #
+# TR_TORRENT_HASH                                                               #
+# TR_TORRENT_ID                                                                 #
+# TR_TORRENT_NAME                                                               #
+#                                                                               #
+#################################################################################
+
+msg(){
+  echo "=== `basename $0`: $*"
+}
+clean(){
+  echo "$1" | tr -s '[]() +' '.' | sed 's/\.$//'
+}
+IFS="
+"
+
+#for testing: TR_TORRENT_NAME=$1
+
+[[ ! "$TR_TORRENT_NAME" ]] && exit
+msg "TR_TORRENT_NAME=$TR_TORRENT_NAME"
+src="`basename \"$TR_TORRENT_NAME\"`"
+cleanName=`clean "$src"`
+
+cd
+
+###############################################
+# determine if it's a TV show or a movie
+###############################################
+TV1=".*\.[sS][0-9][0-9][eE][0-9][0-9]\..*"                 # EPISODE
+TV2=".*\.[sS][0-9][0-9]\..*"                               # SEASON
+TV3=".*\.[0-9][0-9][0-9][0-9]\.[0-9][0-9]\.[0-9][0-9]\..*" # .YYYY.MM.DD.
+if [[ $cleanName =~ $TV1 || $cleanName =~ $TV2 ]]
+then
+  destDir=TV/`echo $cleanName | sed -E 's/(.*)\.[sS][0-9][0-9].*/\1/' | sed -e "s/\b\(.\)/\u\1/g"`
+elif [[ $cleanName =~ $TV3 ]]
+then
+  destDir=TV/`echo $cleanName | sed -E 's/(.*)\.[0-9][0-9][0-9][0-9]\.[0-9][0-9]\.[0-9][0-9].*/\1/' | sed -e "s/\b\(.\)/\u\1/g"`
+else
+  destDir=Movies/$cleanName
+fi
+###############################################
+# prepare destination directory
+###############################################
+msg   destDir=$destDir
+mkdir -p      $destDir
+chmod 777     $destDir
+###############################################
+# copy over video files, stripping unneeded languages
+###############################################
+# IDENTIFY MOVIE (BIGGEST FILE)  -->   ls -Sr *.mkv *.mp4 2>/dev/null | tail -1
+for f in `find Torrents/"$src" -type f \( -name '*.mkv' -o -name '*.mp4' \) -size +200M` #ignore small files
+do
+  bname=`basename "$f"`
+  dst=$destDir/`clean "$bname"`
+  #cp "$f" "$dst"
+  lang=`ffprobe -hide_banner -loglevel error "$f" -show_entries stream=index:stream_tags=language -select_streams a:0 -of compact=p=0:nk=1 | cut -d'|' -f2`
+  case "$lang" in
+    "eng"|"fre"|"und")
+       ffmpeg -hide_banner -loglevel error -i "$f" -c copy -map 0:v:0 -map 0:a:m:language:$lang? -map 0:s:m:language:$lang? "$dst"
+       ;;
+    *) ffmpeg -hide_banner -loglevel error -i "$f" -c copy -map 0:v:0 -map 0:a:m:language:eng? -map 0:a:m:language:fre? -map 0:s:m:language:eng? -map 0:s:m:language:fre? "$dst"
+       ;;
+  esac
+  chmod 666 "$dst"
+done
+###############################################
+# copy over subtitle files
+###############################################
+case "$lang" in
+  "eng") ESUB=".*[eE]ng.*" ; FSUB=SKIP;;
+  "fre") FSUB=".*[fF]re.*" ; ESUB=SKIP;;
+      *) ESUB=".*";
+esac
+for f in `find Torrents/"$src" -type f -name '*.srt' -o -name '*.sub' -o -name '*.idx'`
+do
+  cleanName=`clean $f`
+  if [[ $cleanName =~ $ESUB || $cleanName =~ $FSUB ]]
+  then
+    bname=`basename "$f"`
+    dst="$destDir/`clean $bname`"
+    cp "$f" "$dst"
+    chmod 666 "$dst"
+  fi
+done

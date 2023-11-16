@@ -1,0 +1,25 @@
+---
+- name: install packages
+  ansible.builtin.package:
+    name: "{{item}}"
+    state: present
+  with_items:
+  - mariadb
+  - python-mysqlclient
+  register: install
+  become: true
+
+- name: initialize database
+  ansible.builtin.command: |
+    mariadb-install-db --user=mysql --basedir=/usr --datadir=/var/lib/mysql
+  become: true
+  when: install.changed
+
+- name: configure service
+  ansible.builtin.systemd:
+    name:    mysql
+    state:   started
+    enabled: yes
+  become: true
+
+

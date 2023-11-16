@@ -1,0 +1,9 @@
+---
+- name: install software
+  include_tasks: install.yml
+
+- name: create users
+  include_tasks: users.yml
+
+- name: install automated db dumps
+  include_tasks: dbdump.yml

@@ -1,0 +1,9 @@
+[Trigger]
+Type = Package
+Operation = Upgrade
+Target = expressvpn
+
+[Action]
+Description = --> Running custom hook: [restart expressvpn and transmission services]
+When = PostTransaction
+Exec = /usr/bin/systemctl start expressvpn.service transmission.service

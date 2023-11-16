@@ -1,0 +1,28 @@
+#!/bin/bash
+odir="{{mediaOtherShare}}"
+dir=
+usage()
+{
+  echo "usage: `basename $0` [-d destdir] url"
+  exit 1
+}
+if [ "$1" == "-d" ]
+then
+  if [ ! -d "$2" ]
+  then
+    echo "\"$2\" not a directory"
+    exit 1
+  fi
+  dir=$2
+  shift 2
+else
+  if [ ! "$(ls -A $odir)" ]
+  then
+    echo "Other not mounted!"
+    exit 1
+  fi
+  dir=`ls -d $odir/? | tail -1`
+fi
+[[ "$1" == "" ]] && usage
+#python3 {{localBin}}/youtube-dl -o "$dir/`date +'%Y%m%d'-`%(title)s.%(ext)s" --referer $1 $1
+yt-dlp -o "$dir/`date +'%Y%m%d'-`%(title)s.%(ext)s" $1

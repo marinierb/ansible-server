@@ -1,0 +1,6 @@
+#!/usr/bin/sh
+# Called by other.service
+# mounts the .other encfs directory
+cat $CREDENTIALS_DIRECTORY/otherPassword \
+  | /usr/bin/encfs -S --public {{mediaOtherDir}} {{mediaOtherShare}}
+exportfs -ar

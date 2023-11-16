@@ -1,0 +1,39 @@
+---
+- name: install
+  ansible.builtin.package:
+    name: transmission-cli
+    state: latest
+  become: true
+  register: package
+  
+- name: prepare download directory
+  ansible.builtin.file:
+    path:  "{{trDownloadDir}}"
+    state: directory
+    owner: "{{user}}"
+    group: "{{user}}"
+    mode:  "0755"
+
+- name: create config dir
+  ansible.builtin.file:
+    path: "{{trConfigDir}}"
+    state: directory
+    owner: "{{user}}"
+    group: "{{user}}"
+
+- name: copy config
+  ansible.builtin.template:
+    src:  settings.json
+    dest: "{{trConfigDir}}"
+    mode: 0600
+  become: true
+  notify: service reload
+
+- name: copy post download script
+  ansible.builtin.template:
+    src:  processTorrent
+    dest: "{{trScriptDir}}"
+    owner: "{{user}}"
+    group: "{{user}}"
+    mode: 0700
+  become: true
