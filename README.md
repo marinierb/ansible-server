@@ -1,12 +1,10 @@
-# Create some servers using ansible
+# Ansible Media Server Setup
 
 ![GitHub last commit](https://img.shields.io/github/last-commit/marinierb/ansible-server)
 
 There is currently only one playbook.
 
-## playbook-server.yml
-
-To configure my media server:
+## Configure my media server
 
 1. Install Manjaro Gnome on /dev/sda
 1. Make sure the OS is up to date
