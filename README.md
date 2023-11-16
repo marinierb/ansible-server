@@ -2,8 +2,6 @@
 
 ![GitHub last commit](https://img.shields.io/github/last-commit/marinierb/ansible-server)
 
-There is currently only one playbook.
-
 ## Configure my media server
 
 1. Install Manjaro Gnome on /dev/sda
