@@ -1,0 +1,15 @@
+- name: create docker volume
+  community.docker.docker_volume:
+    name: portainer_data
+
+- name: create docker container
+  community.docker.docker_container:
+    name:  portainer-ce
+    image: portainer/portainer-ce
+    restart_policy: unless-stopped
+    volumes:
+    - "/var/run/docker.sock:/var/run/docker.sock"
+    - "portainer_data:/data portainer/portainer-ce"
+    ports:
+    - "8000:8000/tcp"
+    - "9443:9443/tcp"

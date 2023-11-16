@@ -1,19 +1,19 @@
 ---
 - hosts: server
   roles:
-  - { role: clean,        tags: clean }
-  - { role: aur,          tags: aur }
-  - { role: shell,        tags: shell }
-  - { role: swap,         tags: swap }
-  - { role: power,        tags: power }
-  - { role: mounts,       tags: mounts }
-  - { role: nfs-server,   tags: nfs }
-  - { role: mediashares,  tags: mediashares }
-  - { role: other,        tags: other }
-  - { role: mariadb,      tags: db }
-  - { role: expressvpn,   tags: vpn }
-  - { role: transmission, tags: transmission }
-  - { role: scripts,      tags: scripts }
-  - { role: webserver,    tags: webserver }
-  - { role: docker,       tags: docker }
-#  - { role: docker-pihole,  tags: pihole }
+  - { role: clean,               tags: clean }
+  - { role: aur,                 tags: aur }
+  - { role: shell,               tags: shell }
+  - { role: swap,                tags: swap }
+  - { role: power,               tags: power }
+  - { role: mounts,              tags: mounts }
+  - { role: nfs-server,          tags: nfs }
+  - { role: mediashares,         tags: mediashares }
+  - { role: other,               tags: other }
+  - { role: mariadb,             tags: db }
+  - { role: expressvpn,          tags: vpn }
+  - { role: transmission,        tags: transmission }
+  - { role: scripts,             tags: scripts }
+  - { role: webserver,           tags: webserver }
+  - { role: docker,              tags: docker }
+  - { role: docker-portainer-ce, tags: portainer }
