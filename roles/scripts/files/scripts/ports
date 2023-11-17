@@ -1,5 +1,5 @@
 #!/bin/bash
-lsof -nP -iTCP -iUDP \
+sudo lsof -nP -iTCP -iUDP \
 | grep LISTEN \
 | awk '{ split($9,a,":"); printf "%-30s %s\n", $1, a[2] }' \
 | sort -n -k 2 \
