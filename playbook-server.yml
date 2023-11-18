@@ -17,4 +17,3 @@
 #  - { role: webserver,        tags: webserver }
   - { role: docker,           tags: docker }
   - { role: docker-portainer, tags: portainer }
-#  - { role: docker-pihole,    tags: pihole }
