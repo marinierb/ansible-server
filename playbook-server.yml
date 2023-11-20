@@ -14,6 +14,6 @@
   - { role: expressvpn,       tags: vpn }
   - { role: transmission,     tags: transmission }
   - { role: scripts,          tags: scripts }
-#  - { role: webserver,        tags: webserver }
+  - { role: webserver,        tags: webserver }
   - { role: docker,           tags: docker }
   - { role: docker-portainer, tags: portainer }
