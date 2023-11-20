@@ -1,5 +1,5 @@
 ---
-- name: copy scripts
+- name: install scripts
   ansible.builtin.copy:
     src:  "{{item}}"
     dest: "{{userDir}}/Scripts"
@@ -7,3 +7,12 @@
   with_fileglob:
     - "scripts/*"
 
+- name: install local bin stuff
+  ansible.builtin.template:
+    src:  "{{item}}"
+    dest:  "{{localBin}}/"
+    owner: bruno
+    group: bruno
+    mode: 0500
+  with_fileglob:
+    - "localbin/*"
