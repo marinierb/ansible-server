@@ -9,6 +9,15 @@
 
         pamac update
 
+1. Set static IP
+
+        sudo nmcli con mod "Wired connection 1" \
+          ipv4.addresses "192.168.0.11/24" \
+          ipv4.gateway "192.168.0.1" \
+          ipv4.dns "192.168.0.2" \
+          ipv4.dns-search "home.arpa" \
+          ipv4.method "manual"
+
 1. Configure and test **ssh**
 1. Run playbook, which will:
    * clean up some stuff
