@@ -1,3 +1,10 @@
 #!/usr/bin/sh
 pass=`cat $CREDENTIALS_DIRECTORY/kodiPassword`
-/usr/bin/mysqldump -u {{dbUsers[1].name}} -p"$pass" -B {{kodiDatabase}} >{{kodiDumpFile}}
+dumpfile=/home/bruno/other/kodiDB-MyVideos121.sql
+for i in {4..1}
+do
+  curr=$dumpfile.$i ; next=$dumpfile.$(($i+1))
+  [[ -f $curr ]] && mv -f $curr $next
+done
+[[ -f $dumpfile ]] && mv -f $dumpfile $dumpfile.1
+/usr/bin/mariadb-dump -u kodi -p"$pass" -B MyVideos121 >/home/bruno/other/kodiDB-MyVideos121.sql
