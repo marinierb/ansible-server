@@ -4,10 +4,15 @@
 
 ## Configure my media server
 
-1. Install Manjaro Gnome on /dev/sda
-1. Make sure the OS is up to date
+1. Install Manjaro Gnome (minimal) on /dev/sda
 
-        pamac update
+1. Update mirror list
+
+        sudo pacman-mirrors -c Canada United_States
+
+1. Update all packages
+
+        sudo pacman -Syyu
 
 1. Set static IP
 
@@ -18,7 +23,16 @@
           ipv4.dns-search "home.arpa" \
           ipv4.method "manual"
 
-1. Configure and test **ssh**
+1. Reboot
+
+1. Configure and test **ssh**, i.e.
+
+        On server:
+                sudo systemctl enable sshd --now
+        On desktop:
+                ssh-copy-id -i ~/.ssh/id_rsa.pub bruno@serverxyz
+                ssh server
+
 1. Run playbook, which will:
    * clean up some stuff
    * enable AUR
