@@ -5,7 +5,7 @@ tzShort: EST
 siteDomain:     "home.arpa"
 siteGateway:    "192.168.0.1"
 siteNetmask:    "255.255.255.0"
-siteDNS:        "192.168.0.4,192.168.0.2"
+siteDNS:        "192.168.0.2"
 
 desktop:  "192.168.0.10"
 phone:    "192.168.0.100"
