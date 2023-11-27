@@ -1,0 +1,25 @@
+---
+- name: set default shell
+  ansible.builtin.user:
+    name: "{{user}}"
+    shell: "/bin/bash"
+  become: true
+
+- name: install bash-completion
+  ansible.builtin.package:
+    name: bash-completion
+    state: present
+  become: true
+
+- name: install ssh environment file
+  ansible.builtin.copy:
+    src:  ssh_environment
+    dest: "{{userDir}}/.ssh/environment"
+
+- name: enable ssh environment file
+  ansible.builtin.lineinfile:
+    path:   "/etc/ssh/sshd_config"
+    regexp: '^#PermitUserEnvironment.*'
+    line:   'PermitUserEnvironment yes'
+  become: true
+  notify: restart sshd

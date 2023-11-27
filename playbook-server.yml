@@ -3,7 +3,7 @@
   roles:
   - { role: clean,            tags: clean }
   - { role: aur,              tags: aur }
-  - { role: shell,            tags: shell }
+  - { role: bash,             tags: bash }
   - { role: swap,             tags: swap }
   - { role: power,            tags: power }
   - { role: mounts,           tags: mounts }
