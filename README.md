@@ -30,13 +30,14 @@
         On server:
                 sudo systemctl enable sshd --now
         On desktop:
-                ssh-copy-id -i ~/.ssh/id_rsa.pub bruno@serverxyz
+                ssh-copy-id -i ~/.ssh/id_rsa.pub server
                 ssh server
 
 1. Run playbook, which will:
-   * clean up some stuff
+
+   * clean up a bit
    * enable AUR
-   * configure some stuff (shell, swap, power settings)
+   * configure some stuff (bash, swap, power settings)
    * create filesystem mounts (two nvme drives with existing data are used)
    * install nfs server
    * create nfs shares
