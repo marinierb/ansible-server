@@ -15,7 +15,8 @@
 #################################################################################
 
 msg(){
-  echo "=== `basename $0`: $*"
+  exec #do nothing
+  #echo "=== `basename $0`: $*"
 }
 clean(){
   echo "$1" | tr -s '[]() +' '.' | sed 's/\.$//'
@@ -62,12 +63,12 @@ do
   bname=`basename "$f"`
   dst=$destDir/`clean "$bname"`
   #cp "$f" "$dst"
-  lang=`ffprobe -hide_banner -loglevel error "$f" -show_entries stream=index:stream_tags=language -select_streams a:0 -of compact=p=0:nk=1 | cut -d'|' -f2`
+  lang=`ffprobe -y -hide_banner -loglevel error "$f" -show_entries stream=index:stream_tags=language -select_streams a:0 -of compact=p=0:nk=1 | cut -d'|' -f2`
   case "$lang" in
     "eng"|"fre"|"und")
-       ffmpeg -hide_banner -loglevel error -i "$f" -c copy -map 0:v:0 -map 0:a:m:language:$lang? -map 0:s:m:language:$lang? "$dst"
+       ffmpeg -y -hide_banner -loglevel error -i "$f" -c copy -map 0:v:0 -map 0:a:m:language:$lang? -map 0:s:m:language:$lang? "$dst"
        ;;
-    *) ffmpeg -hide_banner -loglevel error -i "$f" -c copy -map 0:v:0 -map 0:a:m:language:eng? -map 0:a:m:language:fre? -map 0:s:m:language:eng? -map 0:s:m:language:fre? "$dst"
+    *) ffmpeg -y -hide_banner -loglevel error -i "$f" -c copy -map 0:v:0 -map 0:a:m:language:eng? -map 0:a:m:language:fre? -map 0:s:m:language:eng? -map 0:s:m:language:fre? "$dst"
        ;;
   esac
   chmod 666 "$dst"
